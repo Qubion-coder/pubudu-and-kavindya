@@ -1,5 +1,3 @@
-// Paste the Web App URL from the Apps Script deployment of code.ts here
-// (or set VITE_GOOGLE_APPS_SCRIPT_URL in Vercel).
+// Google Apps Script Web App (code.ts) — saves RSVP and Wishes to the Google Sheet
 export const SCRIPT_URL =
-  import.meta.env.VITE_GOOGLE_APPS_SCRIPT_URL ||
-  'PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL_HERE';
+  'https://script.google.com/macros/s/AKfycbzK1vP1Uk0zHfO9LNPHDwDb5LuU0co7xnzyonkZARbmW-wlLAbfEA-hvnmyF-12pZ_JrQ/exec';
