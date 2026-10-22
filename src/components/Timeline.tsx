@@ -3,10 +3,10 @@ import { motion } from 'motion/react';
 import { Heart, Music, Camera, Utensils, PartyPopper } from 'lucide-react';
 
 const events = [
-  { time: '09:00 AM', title: 'Poruwa Ceremony', icon: Music, desc: 'The traditional and sacred Poruwa ceremony at Hilton Colombo' },
-  { time: '10:00 AM', title: 'Function Starts', icon: Heart, desc: 'A warm welcome to our loved ones' },
-  { time: '12:30 PM', title: 'Buffet opening', icon: Utensils, desc: 'A grand celebratory feast' },
-  { time: '04:00 PM', title: 'Wedding send off', icon: PartyPopper, desc: 'Farewell as we begin our journey together' },
+  { time: '10:00 AM', title: 'Welcome', icon: Heart, desc: 'A warm welcome to our loved ones at Polhena Grand Resort & Banquet' },
+  { time: '10:30 AM', title: 'Arrival of the Couple', icon: Music, desc: 'Pubudu & Kavindya make their homecoming entrance' },
+  { time: '12:30 PM', title: 'Lunch', icon: Utensils, desc: 'A celebratory feast with family and friends' },
+  { time: '03:00 PM', title: 'Farewell', icon: PartyPopper, desc: 'Thank you for sharing our special day' },
 ];
 
 export const Timeline: React.FC = () => {
@@ -16,7 +16,7 @@ export const Timeline: React.FC = () => {
         <span className="text-brand-beige-deep uppercase tracking-[0.4em] text-[10px] font-medium mb-4 block">
           The Day's Flow
         </span>
-        <h2 className="text-5xl font-display text-stone-800 tracking-tight">Wedding Timeline</h2>
+        <h2 className="text-5xl font-display text-stone-800 tracking-tight">Homecoming Timeline</h2>
         <div className="w-12 h-px bg-brand-beige/30 mx-auto mt-6" />
       </div>
 

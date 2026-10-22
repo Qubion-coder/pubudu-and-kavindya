@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
+import { getGuestDisplayName } from "../guest";
 
 export function EnvelopeOpening({ onComplete, onMusicStart }: { onComplete: () => void, onMusicStart?: () => void }) {
   const [opened, setOpened] = useState(false);
-  
-  const params = new URLSearchParams(window.location.search);
-  const prefix = params.get('prefix');
-  const guestName = params.get('name');
+
+  const displayName = getGuestDisplayName();
 
   useEffect(() => {
     if (opened) {
@@ -412,7 +411,7 @@ export function EnvelopeOpening({ onComplete, onMusicStart }: { onComplete: () =
               </svg>
 
               <div className="text-eyebrow">
-                {guestName ? `Dear ${prefix} ${guestName},` : 'Promise of Love'}
+                {displayName ? `Dear ${displayName},` : 'The Homecoming of'}
               </div>
 
               <div className="divider">
@@ -422,9 +421,9 @@ export function EnvelopeOpening({ onComplete, onMusicStart }: { onComplete: () =
               </div>
 
               <h1 className="text-names">
-                Isuri
+                Pubudu
                 <span className="text-ampersand">&</span>
-                &nbsp;Duvindu
+                &nbsp;Kavindya
               </h1>
 
               <div className="divider">
@@ -434,10 +433,10 @@ export function EnvelopeOpening({ onComplete, onMusicStart }: { onComplete: () =
               </div>
 
               <div className="text-details">
-                Request the honour of your presence<br />
-                <span className="text-date">Tuesday 05 January 2027 At 09:00 AM</span>
-                <span className="text-church">Hilton Colombo</span><br />
-                Colombo
+                Will be honoured by your gracious presence and blessings<br />
+                <span className="text-date">Sunday 17 January 2027 At 10:00 AM</span>
+                <span className="text-church">Polhena Grand Resort &amp; Banquet</span><br />
+                Matara
               </div>
             </div>
           </div>

@@ -1,59 +1,55 @@
 import React, { useState } from 'react';
-import { Copy, Link as LinkIcon, CheckCircle } from 'lucide-react';
-
-const PREFIXES = [
-  'Mr.',
-  'Mrs.',
-  'Mr. & Mrs.',
-  'Ms.',
-  'Miss',
-  'Dr.',
-  'Prof.',
-  'Rev.'
-];
+import { Copy, Link as LinkIcon, MessageCircle } from 'lucide-react';
+import { Toaster, toast } from 'sonner';
+import {
+  PREFIXES,
+  GROOM_NAME,
+  BRIDE_NAME,
+  buildDisplayName,
+  buildGuestLink,
+  buildInvitationMessage,
+} from './guest';
 
 export function AdminPage() {
-  const [prefix, setPrefix] = useState('Mr. & Mrs.');
+  const [prefix, setPrefix] = useState<string>('Mr.');
   const [guestName, setGuestName] = useState('');
   const [generatedLink, setGeneratedLink] = useState('');
-  const [copied, setCopied] = useState(false);
+  const [displayName, setDisplayName] = useState('');
+
+  const message = generatedLink ? buildInvitationMessage(displayName, generatedLink) : '';
 
   const handleGenerate = () => {
     if (!guestName.trim()) return;
-    
-    const baseUrl = window.location.origin;
-    const params = new URLSearchParams();
-    params.set('prefix', prefix);
-    params.set('name', guestName.trim());
-    
-    const link = `${baseUrl}/?${params.toString()}`;
-    setGeneratedLink(link);
-    setCopied(false);
+    setDisplayName(buildDisplayName(prefix, guestName));
+    setGeneratedLink(buildGuestLink(window.location.origin, prefix, guestName));
   };
 
-  const handleCopy = async () => {
+  const copyText = async (text: string, successMessage: string) => {
     try {
-      await navigator.clipboard.writeText(generatedLink);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      await navigator.clipboard.writeText(text);
+      toast.success(successMessage);
     } catch (err) {
       console.error('Failed to copy text: ', err);
+      toast.error('Could not copy. Please copy manually.');
     }
   };
 
   return (
     <div className="min-h-screen bg-brand-ivory py-12 px-4 sm:px-6 lg:px-8 font-sans text-stone-800 flex items-center justify-center">
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-[0_8px_30px_rgba(176,137,104,0.15)] overflow-hidden border border-brand-beige/50">
-        <div className="px-6 py-8">
+      <Toaster position="top-center" />
+      <div className="w-full max-w-xl bg-white rounded-2xl shadow-[0_8px_30px_rgba(176,137,104,0.15)] overflow-hidden border border-brand-beige/50">
+        <div className="px-6 py-8 sm:px-10">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-display tracking-wide mb-2 text-stone-800">Link Generator</h2>
-            <p className="text-stone-500 font-sans text-sm uppercase tracking-[0.2em]">Create personalized invitation links</p>
+            <p className="text-stone-500 font-sans text-sm uppercase tracking-[0.2em]">
+              {GROOM_NAME} &amp; {BRIDE_NAME} — personalized invitations
+            </p>
           </div>
 
           <div className="space-y-6">
             <div>
               <label htmlFor="prefix" className="block text-sm font-medium text-stone-700 mb-1 tracking-wide">
-                Prefix
+                Select Prefix
               </label>
               <select
                 id="prefix"
@@ -76,7 +72,8 @@ export function AdminPage() {
                 id="guestName"
                 value={guestName}
                 onChange={(e) => setGuestName(e.target.value)}
-                placeholder="e.g. John Doe"
+                onKeyDown={(e) => e.key === 'Enter' && handleGenerate()}
+                placeholder="e.g. Sanjaya"
                 className="w-full px-4 py-3 rounded-lg border border-brand-beige focus:ring-2 focus:ring-brand-beige-deep focus:border-transparent outline-none transition-all bg-white font-sans"
               />
             </div>
@@ -90,23 +87,42 @@ export function AdminPage() {
               Generate Link
             </button>
 
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <button
+                onClick={() => copyText(generatedLink, 'Link copied!')}
+                disabled={!generatedLink}
+                className="flex items-center justify-center gap-2 px-4 py-3 rounded-full border border-brand-beige-deep text-brand-beige-deep font-sans text-xs tracking-[0.15em] uppercase hover:bg-brand-beige/20 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                <Copy className="w-4 h-4" />
+                Copy Link Only
+              </button>
+              <button
+                onClick={() => copyText(message, 'Message copied!')}
+                disabled={!generatedLink}
+                className="flex items-center justify-center gap-2 px-4 py-3 rounded-full bg-stone-800 text-brand-champagne font-sans text-xs tracking-[0.15em] uppercase hover:bg-stone-900 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                <MessageCircle className="w-4 h-4" />
+                Copy Full Message
+              </button>
+            </div>
+
             {generatedLink && (
-              <div className="mt-8 p-4 bg-brand-ivory rounded-xl border border-brand-beige/50 animate-in fade-in slide-in-from-bottom-2">
-                <p className="text-sm text-stone-600 mb-2 font-medium tracking-wide">Generated Link:</p>
-                <div className="flex gap-2 items-center">
-                  <input
-                    type="text"
-                    readOnly
-                    value={generatedLink}
-                    className="flex-1 w-full px-3 py-2 text-sm bg-white border border-brand-beige/50 rounded-md focus:outline-none text-stone-600 font-sans"
-                  />
-                  <button
-                    onClick={handleCopy}
-                    className="flex-shrink-0 p-2 text-brand-beige-deep hover:bg-brand-beige/20 rounded-md transition-colors"
-                    title="Copy to clipboard"
+              <div className="mt-4 space-y-4">
+                <div className="p-4 bg-brand-ivory rounded-xl border border-brand-beige/50">
+                  <p className="text-xs text-stone-500 mb-2 font-semibold uppercase tracking-[0.15em]">Generated Link</p>
+                  <a
+                    href={generatedLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block break-all text-sm text-brand-beige-deep underline underline-offset-2"
                   >
-                    {copied ? <CheckCircle className="w-5 h-5 text-green-600" /> : <Copy className="w-5 h-5" />}
-                  </button>
+                    {generatedLink}
+                  </a>
+                </div>
+
+                <div className="p-4 bg-brand-ivory rounded-xl border border-brand-beige/50">
+                  <p className="text-xs text-stone-500 mb-2 font-semibold uppercase tracking-[0.15em]">Message Preview</p>
+                  <pre className="whitespace-pre-wrap break-words font-sans text-sm text-stone-600 leading-relaxed">{message}</pre>
                 </div>
               </div>
             )}
