@@ -68,34 +68,8 @@ function doPost(e) {
   }
 }
 
-/**
- * GET ?action=wishes  → latest wishes (newest first) for the guestbook.
- * GET (no action)     → health check.
- */
-function doGet(e) {
-  var action = e && e.parameter ? String(e.parameter.action || '') : '';
-
-  if (action === 'wishes') {
-    var sheet = getOrCreateSheet_(SHEETS.WISHES);
-    var lastRow = sheet.getLastRow();
-    var wishes = [];
-
-    if (lastRow > 1) {
-      var rows = sheet.getRange(2, 1, lastRow - 1, 3).getValues();
-      for (var i = rows.length - 1; i >= 0 && wishes.length < 50; i--) {
-        if (!rows[i][1] || !rows[i][2]) continue;
-        wishes.push({
-          id: String(i + 2),
-          name: String(rows[i][1]),
-          message: String(rows[i][2]),
-          createdAt: rows[i][0] instanceof Date ? rows[i][0].toISOString() : String(rows[i][0]),
-        });
-      }
-    }
-
-    return json_({ result: 'success', wishes: wishes });
-  }
-
+/** GET → health check (open the Web App URL in a browser to test). */
+function doGet() {
   return json_({ result: 'success', message: 'Pubudu & Kavindya homecoming endpoint is running.' });
 }
 
